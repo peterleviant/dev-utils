@@ -19,6 +19,7 @@ except subprocess.CalledProcessError:
 branch = os.environ.get("BRANCH", "main")
 token = os.environ.get("GHTOKEN")
 ghprofile = os.environ.get("GHPROFILE")
+workdir = os.environ.get("WORKDIR")
 prefix = token + "@" if token else ""
 
 in_colab = "google.colab" in sys.modules
@@ -33,14 +34,15 @@ def _go():
         _clone_repo(repo, branch, prefix)
             
         os.chdir(repo_root)
-
+        
         _install_dependencies_colab()
 
     else: # move to the repo root
         os.chdir(repo_dir)
+    change_to_workdir()
         
         
-def change_to_workdir(workdir="workdir"):
+def change_to_workdir():
     cwd = Path.cwd().name
     if cwd != workdir:  # if we're not in the lab directory
         if cwd != repo:  # check that we're in the repo root
